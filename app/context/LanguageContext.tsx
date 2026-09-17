@@ -27,6 +27,7 @@ interface LanguageContextType {
   getAsset: (keyOrPath: SettingValue | null | undefined, fallback?: string) => string;
   getAssetUrl: (keyOrPath: SettingValue | null | undefined, fallback?: string) => string; 
 }
+
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 export const LanguageProvider = ({ children }: { children: React.ReactNode }) => {
@@ -35,40 +36,52 @@ export const LanguageProvider = ({ children }: { children: React.ReactNode }) =>
   const [previewData, setPreviewData] = useState<SettingsMap | null>(null);
 
   useEffect(() => {
-    const fetchSettings = async () => {
-      try {
-        const response = await fetch(`${API_BASE}/api/settings`);
-        if (!response.ok) throw new Error("Settings fetch failed");
-        const json = await response.json();
-        setInitialData(json as SettingsMap);
-      } catch (err) {
-        console.error("API Settings Fetch Error:", err);
-      }
-    };
-    fetchSettings();
-  }, []);
+    let isMounted = true;
 
-  useEffect(() => {
-    const handleMessage = async (event: MessageEvent) => {
+    // Helper to fetch settings asynchronously without triggering synchronous setState linter warnings
+    const loadSettings = () => {
+      fetch(`${API_BASE}/api/settings?t=${Date.now()}`, {
+        cache: "no-store",
+        headers: {
+          "Cache-Control": "no-cache",
+        },
+      })
+        .then((res) => {
+          if (!res.ok) throw new Error("Settings fetch failed");
+          return res.json();
+        })
+        .then((json: SettingsMap) => {
+          if (isMounted) {
+            setInitialData(json);
+          }
+        })
+        .catch((err) => {
+          console.error("API Settings Fetch Error:", err);
+        });
+    };
+
+    // 1. Initial settings fetch
+    loadSettings();
+
+    // 2. Listen for Livewire postMessage events (preview & publish reload)
+    const handleMessage = (event: MessageEvent) => {
       if (event.data?.type === "TET_LIVE_PREVIEW") {
-        setPreviewData(event.data.state);
+        setPreviewData((prev) => ({
+          ...(prev || {}),
+          ...event.data.state,
+        }));
       }
 
       if (event.data?.type === "TET_RELOAD_SETTINGS") {
-        try {
-          const response = await fetch(`${API_BASE}/api/settings`);
-          if (response.ok) {
-            const json = await response.json();
-            setInitialData(json);
-          }
-        } catch (err) {
-          console.error("Settings reload error:", err);
-        }
+        loadSettings();
       }
     };
 
     window.addEventListener("message", handleMessage);
-    return () => window.removeEventListener("message", handleMessage);
+    return () => {
+      isMounted = false;
+      window.removeEventListener("message", handleMessage);
+    };
   }, []);
 
   const mergedData = useMemo<SettingsMap>(() => {
@@ -89,7 +102,6 @@ export const LanguageProvider = ({ children }: { children: React.ReactNode }) =>
     [mergedData, locale]
   );
 
-
   const getAsset = useCallback(
     (keyOrPath: SettingValue | null | undefined, fallback: string = ""): string => {
       if (!keyOrPath) return fallback;
@@ -100,7 +112,6 @@ export const LanguageProvider = ({ children }: { children: React.ReactNode }) =>
         if (keyOrPath in mergedData) {
           target = mergedData[keyOrPath];
         } else if (!keyOrPath.includes("/") && !keyOrPath.includes(".")) {
-          
           return fallback;
         }
       }
@@ -111,7 +122,7 @@ export const LanguageProvider = ({ children }: { children: React.ReactNode }) =>
       if (typeof target === "object") {
         finalPath = target[locale] || target["en"] || Object.values(target)[0] || "";
       } else {
-         finalPath = String(target).trim().replace(/^["']|["']$/g, "").replace(/\\/g, "/");
+        finalPath = String(target).trim().replace(/^["']|["']$/g, "").replace(/\\/g, "/");
       }
 
       if (!finalPath) return fallback;

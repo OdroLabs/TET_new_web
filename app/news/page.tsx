@@ -54,8 +54,7 @@ export default async function Page() {
   try {
     const res = await fetch(`${API_BASE}/api/activities`, { next: { revalidate: 60 } });
     if (res.ok) {
-      const data = await res.json();
-      activities = Array.isArray(data) ? data : [];
+      activities = await res.json();
     }
   } catch (err) {
     console.error("Failed to fetch activities for SEO schema:", err);

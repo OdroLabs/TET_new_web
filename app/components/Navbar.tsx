@@ -21,7 +21,11 @@ export default function Navbar() {
   const navLinks = [
     // { name: t("nav_home", "Home"), href: "/" },
     { name: t("nav_about", "About"), href: "/about" },
-    { name: t("nav_services", "Services"), href: "/services", hasDropdown: true },
+    {
+      name: t("nav_services", "Services"),
+      href: "/services",
+      hasDropdown: true,
+    },
     { name: t("nav_projects", "Projects"), href: "/projects" },
     { name: t("nav_gallery", "Events & Gallery"), href: "/gallery" },
     { name: t("nav_activities", "Activities"), href: "/news" },
@@ -34,10 +38,8 @@ export default function Navbar() {
   return (
     // 👇 Solid clean light pink background with no gray/silver gradients
     <nav className="bg-[#fbf4f6] backdrop-blur-md sticky top-0 z-50 border-b border-[#EFB9C5]/60 shadow-sm">
-      
       <div className="px-4 md:px-8 w-full">
         <div className="flex justify-between h-20 items-center">
-          
           {/* LOGO */}
           <Link href="/" className="flex-shrink-0 flex items-center">
             {customLogo ? (
@@ -58,42 +60,52 @@ export default function Navbar() {
 
           {/* DESKTOP LINKS */}
           <div className="hidden lg:flex items-center flex-grow justify-center space-x-5 xl:space-x-7 text-[11px] font-bold uppercase tracking-[0.2em] text-slate-700">
-            {navLinks.map((link) => (
+            {navLinks.map((link) =>
               link.hasDropdown ? (
-                <div 
-                  key={link.name} 
-                  className="relative group" 
-                  onMouseEnter={() => setIsServicesOpen(true)} 
+                <div
+                  key={link.name}
+                  className="relative group"
+                  onMouseEnter={() => setIsServicesOpen(true)}
                   onMouseLeave={() => setIsServicesOpen(false)}
                 >
-                  <Link 
-                    href={link.href} 
+                  <Link
+                    href={link.href}
                     className="hover:text-[#2A8ACD] transition-colors flex items-center gap-1 py-2"
                   >
                     {link.name}
-                    <svg className="w-2.5 h-2.5 text-[#2A8ACD]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M19 9l-7 7-7-7" />
+                    <svg
+                      className="w-2.5 h-2.5 text-[#2A8ACD]"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2.5"
+                        d="M19 9l-7 7-7-7"
+                      />
                     </svg>
                   </Link>
 
                   {/* Dropdown */}
                   <AnimatePresence>
                     {isServicesOpen && (
-                      <motion.div 
-                        initial={{ opacity: 0, y: 8 }} 
-                        animate={{ opacity: 1, y: 0 }} 
-                        exit={{ opacity: 0, y: 8 }} 
+                      <motion.div
+                        initial={{ opacity: 0, y: 8 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 8 }}
                         className="absolute top-full left-0 pt-1 w-52"
                       >
                         <div className="bg-white shadow-lg shadow-pink-100/50 rounded-2xl py-2 border border-[#EFB9C5]/40">
-                          <Link 
-                            href="/services" 
+                          <Link
+                            href="/services"
                             className="block px-4 py-2 hover:bg-pink-50 text-slate-700 hover:text-[#2A8ACD] transition-colors text-[10px]"
                           >
                             {t("nav_drop_services", "Advocacy Services")}
                           </Link>
-                          <Link 
-                            href="/volunteer" 
+                          <Link
+                            href="/volunteer"
                             className="block px-4 py-2 hover:bg-pink-50 text-slate-700 hover:text-[#2A8ACD] transition-colors text-[10px]"
                           >
                             {t("nav_drop_volunteer", "Volunteer")}
@@ -104,15 +116,15 @@ export default function Navbar() {
                   </AnimatePresence>
                 </div>
               ) : (
-                <Link 
-                  key={link.name} 
-                  href={link.href} 
+                <Link
+                  key={link.name}
+                  href={link.href}
                   className="hover:text-[#2A8ACD] transition-colors whitespace-nowrap"
                 >
                   {link.name}
                 </Link>
-              )
-            ))}
+              ),
+            )}
           </div>
 
           {/* RIGHT ACTIONS: DONATE + TRILINGUAL SWITCHER */}
@@ -136,8 +148,8 @@ export default function Navbar() {
             </div>
 
             {/* Donate Button */}
-            <Link 
-              href={t("nav_donate_url", "/donate")} 
+            <Link
+              href="/donate"
               className="bg-[#2A8ACD] hover:bg-[#2374b0] text-white text-[10px] font-black uppercase tracking-widest px-5 py-2.5 rounded-full shadow-md shadow-sky-100 transition-all hover:scale-105 active:scale-95"
             >
               {t("btn_donate", "Donate")}
@@ -145,13 +157,27 @@ export default function Navbar() {
           </div>
 
           {/* MOBILE MENU TOGGLE */}
-          <button 
-            className="lg:hidden p-2 text-[#2A8ACD] hover:opacity-80 transition-colors" 
+          <button
+            className="lg:hidden p-2 text-[#2A8ACD] hover:opacity-80 transition-colors"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             aria-label="Toggle Menu"
           >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d={isMobileMenuOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16m-7 6h7"} />
+            <svg
+              className="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d={
+                  isMobileMenuOpen
+                    ? "M6 18L18 6M6 6l12 12"
+                    : "M4 6h16M4 12h16m-7 6h7"
+                }
+              />
             </svg>
           </button>
         </div>
@@ -160,14 +186,13 @@ export default function Navbar() {
       {/* MOBILE DRAWER */}
       <AnimatePresence>
         {isMobileMenuOpen && (
-          <motion.div 
-            initial={{ opacity: 0, height: 0 }} 
-            animate={{ opacity: 1, height: "auto" }} 
-            exit={{ opacity: 0, height: 0 }} 
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
             className="lg:hidden bg-white border-b border-[#EFB9C5]/40 overflow-hidden shadow-md"
           >
             <div className="flex flex-col p-6 space-y-4 text-[12px] font-bold uppercase tracking-widest text-slate-700">
-              
               <div className="flex items-center justify-between pb-3 border-b border-pink-100">
                 <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">
                   Language:
@@ -191,8 +216,8 @@ export default function Navbar() {
 
               {navLinks.map((link) => (
                 <div key={link.name}>
-                  <Link 
-                    href={link.href} 
+                  <Link
+                    href={link.href}
                     className="hover:text-[#2A8ACD] transition-colors"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
@@ -200,8 +225,8 @@ export default function Navbar() {
                   </Link>
                   {link.hasDropdown && (
                     <div className="pl-4 pt-2 space-y-2 text-slate-500 text-[10px]">
-                      <Link 
-                        href="/volunteer" 
+                      <Link
+                        href="/volunteer"
                         className="block hover:text-[#2A8ACD]"
                         onClick={() => setIsMobileMenuOpen(false)}
                       >
@@ -213,12 +238,12 @@ export default function Navbar() {
               ))}
 
               <div className="pt-2">
-                <Link 
-                  href={t("nav_donate_url", "/donate")} 
+                <Link
+                  href="/donate"
                   onClick={() => setIsMobileMenuOpen(false)}
                   className="block text-center bg-[#2A8ACD] text-white py-3 rounded-full text-[10px] font-black uppercase tracking-widest shadow-md"
                 >
-                  {t('btn_donate', 'Donate')}
+                  {t("btn_donate", "Donate")}
                 </Link>
               </div>
             </div>
