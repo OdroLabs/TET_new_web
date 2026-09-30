@@ -1,8 +1,10 @@
 "use client";
 
 import React from 'react';
+import { useLanguage } from '../context/LanguageContext';
 
 export default function Logo({ className = "h-12" }: { className?: string }) {
+  const { t } = useLanguage();
   return (
     <svg 
       viewBox="0 0 300 80" 
@@ -25,7 +27,8 @@ export default function Logo({ className = "h-12" }: { className?: string }) {
         fill="#1A365D" 
         style={{ font: 'bold 28px serif', letterSpacing: '-0.05em' }}
       >
-        TET
+        
+        {t("ui_logo_tet")}
       </text>
       
       <text 
@@ -34,7 +37,8 @@ export default function Logo({ className = "h-12" }: { className?: string }) {
         fill="#8e7f71" 
         style={{ font: 'bold 9px sans-serif', letterSpacing: '0.4em', textTransform: 'uppercase' }}
       >
-        Trans Equality Trust
+        
+        {t("ui_logo_trans_equality_trust")}
       </text>
     </svg>
   );

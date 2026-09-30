@@ -1,8 +1,10 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
+import { useLanguage } from '../context/LanguageContext';
 
 export default function FontSizeControl() {
+  const { t } = useLanguage();
   const [scale, setScale] = useState(1);
 
   useEffect(() => {
@@ -11,14 +13,14 @@ export default function FontSizeControl() {
   }, [scale]);
 
   const sizes = [
-    { label: 'A-', value: 0.9, title: 'Small' },
-    { label: 'A', value: 1, title: 'Default' },
-    { label: 'A+', value: 1.15, title: 'Large' },
+    { label: 'A-', value: 0.9, title: t('ui_fontsize_small') },
+    { label: 'A', value: 1, title: t('ui_fontsize_default') },
+    { label: 'A+', value: 1.15, title: t('ui_fontsize_large') },
   ];
 
   return (
     <div className="flex items-center gap-1 border-l border-gray-200 pl-6 ml-4">
-      <span className="text-[9px] font-bold text-gray-400 uppercase tracking-widest mr-2">Text</span>
+      <span className="text-[9px] font-bold text-gray-400 uppercase tracking-widest mr-2">{t("ui_fontsize_text")}</span>
       <div className="flex bg-gray-100 p-1 rounded-full">
         {sizes.map((s) => (
           <button

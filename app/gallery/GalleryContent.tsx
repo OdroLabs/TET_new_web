@@ -16,7 +16,7 @@ const fadeInUp: Variants = {
   },
 };
 
-interface EventItem {
+export interface EventItem {
   id: number;
   title: Record<string, string> | string;
   cat?: Record<string, string> | string;
@@ -31,51 +31,6 @@ interface EventItem {
   gallery_images?: string[];
 }
 
-const defaultEvents: EventItem[] = [
-  {
-    id: 1,
-    cat: { en: "Community Dialogue" },
-    date: "OCT 14, 2026",
-    location: { en: "Colombo, Sri Lanka" },
-    title: { en: "Voices of Hope: National Transgender Symposium" },
-    excerpt: { en: "Over 120 grassroots organizers gathered in Colombo to discuss affirmative healthcare access and constitutional protection." },
-    fullStory: { en: "The National Transgender Symposium united transgender activists, medical professionals, and human rights lawyers from across Sri Lanka. Key discussion tracks included safe shelter networks, addressing workplace harassment, and drafting legal reform recommendations to eliminate discriminatory laws." },
-    img: "https://images.unsplash.com/photo-1523240795612-9a054b0db644",
-    gallery: [
-      "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4",
-      "https://images.unsplash.com/photo-1529156069898-49953e39b3ac"
-    ]
-  },
-  {
-    id: 2,
-    cat: { en: "Youth & Empowerment" },
-    date: "SEP 28, 2026",
-    location: { en: "Kandy Safe House" },
-    title: { en: "Peer Circles: Creative Expression & Mental Health" },
-    excerpt: { en: "A safe weekend retreat focusing on art therapy, trauma healing, and peer mentorship for trans youth." },
-    fullStory: { en: "Led by certified counseling liaisons, this workshop provided a non-judgmental sanctuary for gender-diverse youth. Participants engaged in art therapy, storytelling circles, and psycho-social coping strategies, culminating in a collective community mural." },
-    img: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac",
-    gallery: [
-      "https://images.unsplash.com/photo-1511632765486-a01980e01a18",
-      "https://images.unsplash.com/photo-1531206715517-5c0ba140b2b8"
-    ]
-  },
-  {
-    id: 3,
-    cat: { en: "Advocacy & Law" },
-    date: "AUG 19, 2026",
-    location: { en: "Galle Heritage Hall" },
-    title: { en: "Legal Rights & Anti-Discrimination Training" },
-    excerpt: { en: "Training community paralegals to navigate police arbitrary detentions and legal gender recognition paperwork." },
-    fullStory: { en: "This legal education summit equipped community members with critical knowledge regarding fundamental rights under the Constitution of Sri Lanka, safe reporting protocols, and legal identity card (NIC) gender change procedures." },
-    img: "https://images.unsplash.com/photo-1531206715517-5c0ba140b2b8",
-    gallery: [
-      "https://images.unsplash.com/photo-1450133064473-71024230f91b",
-      "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2"
-    ]
-  }
-];
-
 // Event Detail Modal
 function EventDetailModal({
   event,
@@ -86,7 +41,7 @@ function EventDetailModal({
   onClose: () => void;
   resolveText: (val: Record<string, string> | string | undefined, fallback?: string) => string;
 }) {
-  const { getAssetUrl } = useLanguage();
+  const { t, getAssetUrl } = useLanguage();
   const [copiedLink, setCopiedLink] = useState(false);
 
   useEffect(() => {
@@ -97,24 +52,25 @@ function EventDetailModal({
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [onClose]);
 
-  const title = resolveText(event.title, "Community Event");
-  const category = resolveText(event.cat, "Advocacy");
-  const date = event.date || "Recent Event";
-  const location = resolveText(event.location, "Sri Lanka");
-  const excerpt = resolveText(event.excerpt, "");
+  const title = resolveText(event.title);
+  const category = resolveText(event.cat);
+  const date = event.date || "";
+  const location = resolveText(event.location);
+  const excerpt = resolveText(event.excerpt);
   const fullStory = resolveText(event.fullStory || event.full_story, excerpt);
-  const mainImg = getAssetUrl(event.img || event.cover_image, "https://images.unsplash.com/photo-1523240795612-9a054b0db644");
+  const mainImg = getAssetUrl(event.img || event.cover_image);
 
   const rawGallery = event.gallery || event.gallery_images || [];
   const galleryPhotos = rawGallery.map((g) => getAssetUrl(g)).filter(Boolean);
 
   const handleShare = (platform: "facebook" | "whatsapp" | "copy") => {
     const shareUrl = typeof window !== "undefined" ? `${window.location.origin}/gallery?event=${event.id}` : "";
-    const shareText = `${title} - Trans Equality Trust Sri Lanka`;
+    const shareText = `${title} - ${t("ui_gallery_share_suffix")}`;
 
     if (platform === "facebook") {
-      // Opens official Facebook page
-      window.open("https://www.facebook.com/share/12G6Xq5jZ15/", "_blank", "width=600,height=500");
+      // Opens the official Facebook page (Admin → Footer & Socials)
+      const fb = t("footer_fb_url");
+      if (fb) window.open(fb, "_blank", "width=600,height=500");
     } else if (platform === "whatsapp") {
       window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(shareText + " " + shareUrl)}`, "_blank");
     } else if (platform === "copy") {
@@ -140,7 +96,7 @@ function EventDetailModal({
         <button
           onClick={onClose}
           className="absolute top-5 right-5 z-20 w-10 h-10 rounded-full bg-white/90 hover:bg-pink-500 hover:text-white text-sky-900 border border-sky-200 flex items-center justify-center transition-all shadow-md font-bold text-sm cursor-pointer"
-          aria-label="Close Event Modal"
+          aria-label={t("ui_gallery_close_event_modal")}
         >
           ✕
         </button>
@@ -178,7 +134,8 @@ function EventDetailModal({
               <span>{location}</span>
             </div>
             <div className="text-[10px] font-bold uppercase tracking-widest text-pink-700 bg-pink-100 px-3 py-1 rounded-full">
-              Official TET Archive
+              
+              {t("ui_gallery_official_tet_archive")}
             </div>
           </div>
 
@@ -191,12 +148,13 @@ function EventDetailModal({
             <div className="pt-2">
             
               <span className="text-[11px] font-bold uppercase tracking-wider text-[#2A8ACD] block mb-3">
-                Event Photo Gallery
+                
+                {t("ui_gallery_event_photo_gallery")}
               </span>
               <div className="grid grid-cols-2 gap-4">
                 {galleryPhotos.map((gImg, gIdx) => (
                   <div key={gIdx} className="relative h-32 md:h-44 rounded-2xl overflow-hidden border border-sky-100">
-                    <Image src={gImg} fill alt="Event Gallery" className="object-cover" sizes="(max-width: 768px) 50vw, 25vw" />
+                    <Image src={gImg} fill alt={t("ui_gallery_event_gallery")} className="object-cover" sizes="(max-width: 768px) 50vw, 25vw" />
                   </div>
                 ))}
               </div>
@@ -206,21 +164,22 @@ function EventDetailModal({
           <div className="pt-6 border-t border-sky-100 flex flex-wrap items-center gap-3">
     
             <span className="text-xs font-black uppercase tracking-wider text-[#2A8ACD] mr-auto">
-              Share Event:
+              
+              {t("ui_gallery_share_event")}
             </span>
 
             <button
               onClick={() => handleShare("facebook")}
               className="px-4 py-2 rounded-xl bg-[#1877f2] hover:bg-[#166fe5] text-white text-xs font-bold transition-all flex items-center gap-2 shadow-sm cursor-pointer"
             >
-              <span>Facebook</span>
+              <span>{t("ui_gallery_facebook")}</span>
             </button>
 
             <button
               onClick={() => handleShare("whatsapp")}
               className="px-4 py-2 rounded-xl bg-[#25d366] hover:bg-[#20bd5a] text-white text-xs font-bold transition-all flex items-center gap-2 shadow-sm cursor-pointer"
             >
-              <span>WhatsApp</span>
+              <span>{t("ui_gallery_whatsapp")}</span>
             </button>
 
             <button
@@ -228,9 +187,9 @@ function EventDetailModal({
               className="px-4 py-2 rounded-xl bg-sky-100 hover:bg-sky-200 text-sky-900 text-xs font-bold transition-all border border-sky-200 flex items-center gap-1.5 cursor-pointer"
             >
               {copiedLink ? (
-                <span className="text-emerald-700 font-black">Link Copied! ✓</span>
+                <span className="text-emerald-700 font-black">{t("ui_gallery_link_copied")}</span>
               ) : (
-                <span>🔗 Copy Link</span>
+                <span>{t("ui_gallery_copy_link")}</span>
               )}
             </button>
           </div>
@@ -241,9 +200,9 @@ function EventDetailModal({
 }
 
 // Main Gallery Page
-export default function GalleryPage() {
+export default function GalleryPage({ initialEvents = null }: { initialEvents?: EventItem[] | null }) {
   const { t, getAssetUrl, locale } = useLanguage();
-  const [eventsList, setEventsList] = useState<EventItem[]>(defaultEvents);
+  const [eventsList, setEventsList] = useState<EventItem[]>(initialEvents ?? []);
   const [selectedEvent, setSelectedEvent] = useState<EventItem | null>(null);
 
   useEffect(() => {
@@ -254,12 +213,12 @@ export default function GalleryPage() {
         const res = await fetch(`${API_BASE}/api/events`);
         if (res.ok) {
           const data = await res.json();
-          if (isMounted && Array.isArray(data) && data.length > 0) {
+          if (isMounted && Array.isArray(data)) {
             setEventsList(data);
           }
         }
       } catch (err) {
-        console.warn("Using offline event defaults:", err);
+        console.warn("Events API unavailable:", err);
       }
     };
 
@@ -325,21 +284,21 @@ export default function GalleryPage() {
        
             <span className="text-[#2A8ACD] font-bold tracking-[0.3em] text-[11px] uppercase mb-4 px-4 py-1.5 bg-sky-50 rounded-full border border-[var(--tet-pink)]/40 inline-flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-pink-500 animate-pulse"></span>
-              {t("gl_events_tag", "COMMUNITY HAPPENINGS • EVENTS & ARCHIVES")}
+              {t("gl_events_tag")}
             </span>
 
       
             <h1 className="font-serif text-4xl md:text-6xl font-bold text-[#2A8ACD] mb-4 tracking-tight">
-              {t("gl_gallery_title", "Visual Storytelling")} <br />
+              {t("gl_gallery_title")} <br />
               <span className="text-pride-gradient italic font-normal font-playfair">
-                &amp; Community Events
+                
+                {t("ui_gallery_and_community_events")}
               </span>
             </h1>
 
             <p className="text-slate-600 text-sm md:text-base leading-relaxed">
               {t(
-                "gl_gallery_desc",
-                "Explore our ongoing gatherings, workshops, and milestones. Click on any event card to read full details and share it to your social media."
+                "gl_gallery_desc"
               )}
             </p>
           </div>
@@ -347,12 +306,12 @@ export default function GalleryPage() {
           {/* 2. DYNAMIC EVENTS GRID */}
           <div id="gallery-events" className="scroll-mt-28 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10">
             {eventsList.map((event, i) => {
-              const title = resolveText(event.title, "Community Event");
-              const category = resolveText(event.cat, "Advocacy");
-              const location = resolveText(event.location, "Sri Lanka");
+              const title = resolveText(event.title);
+              const category = resolveText(event.cat);
+              const location = resolveText(event.location);
               const excerpt = resolveText(event.excerpt);
-              const date = event.date || "Upcoming";
-              const imgSrc = getAssetUrl(event.img || event.cover_image, "https://images.unsplash.com/photo-1523240795612-9a054b0db644");
+              const date = event.date || "";
+              const imgSrc = getAssetUrl(event.img || event.cover_image);
 
               return (
                 <motion.div
@@ -406,9 +365,10 @@ export default function GalleryPage() {
                   <div className="px-6 pb-6 pt-2 flex items-center justify-between border-t border-sky-50 text-[11px] font-bold">
                     
                     <span className="text-[#2A8ACD] group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">
-                      Read Details &amp; Share →
+                      
+                      {t("ui_gallery_read_details_and_share")}
                     </span>
-                    <span className="text-slate-400">TET Archive</span>
+                    <span className="text-slate-400">{t("ui_gallery_tet_archive")}</span>
                   </div>
                 </motion.div>
               );

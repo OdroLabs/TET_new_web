@@ -12,7 +12,7 @@ const fadeInUp: Variants = {
   whileInView: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } },
 };
 
-interface ActivityItem {
+export interface ActivityItem {
   id: number;
   title: Record<string, string> | string;
   date: string;
@@ -34,7 +34,7 @@ function ActivityDetailModal({
   onClose: () => void;
   resolveText: (val: Record<string, string> | string | undefined, fallback?: string) => string;
 }) {
-  const { getAssetUrl } = useLanguage();
+  const { t, getAssetUrl } = useLanguage();
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -44,23 +44,24 @@ function ActivityDetailModal({
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [onClose]);
 
-  const title = resolveText(activity.title, "Field Activity");
-  const date = activity.date || "Recent Update";
-  const location = resolveText(activity.location, "Sri Lanka");
-  const excerpt = resolveText(activity.excerpt, "");
+  const title = resolveText(activity.title);
+  const date = activity.date || "";
+  const location = resolveText(activity.location);
+  const excerpt = resolveText(activity.excerpt);
   const fullStory = resolveText(activity.fullStory || activity.full_story, excerpt);
-  const imgUrl = getAssetUrl(activity.img || activity.image, "https://images.unsplash.com/photo-1516549655169-df83a0774514");
+  const imgUrl = getAssetUrl(activity.img || activity.image);
 
   const shareToFacebook = () => {
-    // Opens official Facebook page
-    window.open("https://www.facebook.com/share/12G6Xq5jZ15/", "_blank", "width=600,height=500");
+    // Opens the official Facebook page (Admin → Footer & Socials)
+    const fb = t("footer_fb_url");
+    if (fb) window.open(fb, "_blank", "width=600,height=500");
   };
 
   const shareToWhatsApp = () => {
     const shareUrl = typeof window !== "undefined"
       ? `${window.location.origin}/news?activity=${activity.id}`
-      : "https://transequalitytrust.lk/news";
-    const msg = `*${title}*\n${excerpt}\nRead more: ${shareUrl}`;
+      : "";
+    const msg = `*${title}*\n${excerpt}\n${t("ui_news_read_more")} ${shareUrl}`;
     window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`, "_blank");
   };
 
@@ -80,7 +81,7 @@ function ActivityDetailModal({
         <button
           onClick={onClose}
           className="absolute top-5 right-5 z-20 w-9 h-9 rounded-full bg-white/90 hover:bg-pink-500 hover:text-white text-sky-900 border border-sky-200 flex items-center justify-center transition-all shadow-md font-bold text-sm cursor-pointer"
-          aria-label="Close Modal"
+          aria-label={t("ui_news_close_modal")}
         >
           ✕
         </button>
@@ -96,7 +97,8 @@ function ActivityDetailModal({
           <div className="absolute inset-0 bg-gradient-to-t from-sky-950/80 via-transparent to-transparent"></div>
           <div className="absolute bottom-5 left-6 right-6 text-white">
             <span className="text-[10px] font-bold uppercase tracking-wider bg-pink-500 text-white px-3 py-1 rounded-full shadow-sm inline-block mb-2">
-              Field Update
+              
+              {t("ui_news_field_update")}
             </span>
             <h2 className="font-serif text-2xl font-bold leading-tight">
               {title}
@@ -110,7 +112,8 @@ function ActivityDetailModal({
             <div className="font-bold text-[#2A8ACD]">📅 {date}</div>
             <div className="font-bold text-[#2A8ACD]">📍 {location}</div>
             <div className="text-[10px] font-black uppercase tracking-wider text-pink-700 bg-pink-100 px-3 py-1 rounded-full">
-              TET Field Report
+              
+              {t("ui_news_tet_field_report")}
             </div>
           </div>
 
@@ -123,20 +126,21 @@ function ActivityDetailModal({
           <div className="pt-6 border-t border-sky-100 flex flex-wrap items-center justify-between gap-3">
            
             <span className="text-xs font-bold uppercase tracking-wider text-[#2A8ACD]">
-              Publish / Share Update:
+              
+              {t("ui_news_publish_share_update")}
             </span>
             <div className="flex items-center gap-2">
               <button
                 onClick={shareToFacebook}
                 className="px-4 py-2 rounded-xl bg-[#1877f2] hover:bg-[#166fe5] text-white text-xs font-bold transition-all flex items-center gap-2 shadow-sm cursor-pointer"
               >
-                <span>Visit Official Facebook Page</span>
+                <span>{t("ui_news_visit_official_facebook_page")}</span>
               </button>
               <button
                 onClick={shareToWhatsApp}
                 className="px-4 py-2 rounded-xl bg-[#25d366] hover:bg-[#20bd5a] text-white text-xs font-bold transition-all flex items-center gap-2 shadow-sm cursor-pointer"
               >
-                <span>WhatsApp</span>
+                <span>{t("ui_news_whatsapp")}</span>
               </button>
             </div>
           </div>
@@ -147,9 +151,9 @@ function ActivityDetailModal({
 }
 
 // Main News Page
-export default function NewsPage() {
+export default function NewsPage({ initialActivities = null }: { initialActivities?: ActivityItem[] | null }) {
   const { t, getAssetUrl, locale } = useLanguage();
-  const [activitiesList, setActivitiesList] = useState<ActivityItem[]>([]);
+  const [activitiesList, setActivitiesList] = useState<ActivityItem[]>(initialActivities ?? []);
   const [selectedActivity, setSelectedActivity] = useState<ActivityItem | null>(null);
 
   // 1. Fetch live collection safely
@@ -234,19 +238,18 @@ export default function NewsPage() {
          
             <span className="text-[#2A8ACD] font-bold text-[11px] tracking-[0.3em] uppercase mb-4 px-3.5 py-1.5 bg-sky-50 rounded-full border border-[var(--tet-pink)]/40 inline-flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-pink-500 animate-pulse"></span>
-              {t("act_hero_label", "GRASSROOTS IN ACTION • DAILY FIELD UPDATES")}
+              {t("act_hero_label")}
             </span>
     
             <h1 className="font-serif text-5xl md:text-7xl font-bold text-[#2A8ACD] mb-4 tracking-tight">
-              {t("act_hero_title1", "Daily")}{" "}
+              {t("act_hero_title1")}{" "}
               <span className="text-pride-gradient italic font-normal font-playfair">
-                {t("act_hero_title2", "Activities.")}
+                {t("act_hero_title2")}
               </span>
             </h1>
             <p className="text-slate-600 max-w-2xl text-sm md:text-base leading-relaxed">
               {t(
-                "act_hero_desc",
-                "Real-time updates, field visits, community support sessions, and grassroots interventions happening across Sri Lanka."
+                "act_hero_desc"
               )}
             </p>
           </motion.div>
@@ -257,11 +260,11 @@ export default function NewsPage() {
       <section id="news-grid" className="scroll-mt-28 px-6">
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10">
           {activitiesList.map((activity, i) => {
-            const title = resolveText(activity.title, "Field Activity");
-            const location = resolveText(activity.location, "Sri Lanka");
-            const excerpt = resolveText(activity.excerpt, "");
-            const date = activity.date || "Recent";
-            const imgSrc = getAssetUrl(activity.img || activity.image, "https://images.unsplash.com/photo-1516549655169-df83a0774514");
+            const title = resolveText(activity.title);
+            const location = resolveText(activity.location);
+            const excerpt = resolveText(activity.excerpt);
+            const date = activity.date || "";
+            const imgSrc = getAssetUrl(activity.img || activity.image);
 
             return (
               <motion.div
@@ -313,9 +316,10 @@ export default function NewsPage() {
                 <div className="p-6 pt-3 border-t border-sky-50 flex items-center justify-between bg-sky-50/30">
             
                   <span className="text-[11px] font-bold text-[#2A8ACD] group-hover:underline">
-                    View Full Details →
+                    
+                    {t("ui_news_view_full_details")}
                   </span>
-                  <span className="text-slate-400 text-[10px]">TET Archive</span>
+                  <span className="text-slate-400 text-[10px]">{t("ui_news_tet_archive")}</span>
                 </div>
               </motion.div>
             );

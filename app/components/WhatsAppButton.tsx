@@ -1,16 +1,13 @@
 "use client";
 
 import React from "react";
+import { useLanguage } from "../context/LanguageContext";
 
-interface WhatsAppButtonProps {
-  phoneNumber?: string; 
-  message?: string;
-}
-
-export default function WhatsAppButton({
-  phoneNumber = "94771234567", 
-  message = "Hello Trans Equality Trust, I would like more information.",
-}: WhatsAppButtonProps) {
+export default function WhatsAppButton() {
+  const { t } = useLanguage();
+  const phoneNumber = t("whatsapp_number").replace(/[^0-9]/g, "");
+  const message = t("whatsapp_message");
+  if (!phoneNumber) return null;
   const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
 
   return (
@@ -21,7 +18,7 @@ export default function WhatsAppButton({
         href={whatsappUrl}
         target="_blank"
         rel="noopener noreferrer"
-        aria-label="Chat on WhatsApp"
+        aria-label={t("ui_whatsapp_chat_on_whatsapp")}
         className="relative group w-14 h-14 md:w-16 md:h-16 bg-[#25D366] hover:bg-[#20bd5a] text-white rounded-full flex items-center justify-center shadow-lg shadow-[#25D366]/40 hover:shadow-xl hover:shadow-[#25D366]/50 transition-all duration-300 hover:scale-110 active:scale-95"
       >
         {/* WhatsApp Icon */}

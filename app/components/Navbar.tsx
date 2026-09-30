@@ -20,17 +20,17 @@ export default function Navbar() {
 
   const navLinks = [
     // { name: t("nav_home", "Home"), href: "/" },
-    { name: t("nav_about", "About"), href: "/about" },
+    { name: t("nav_about"), href: "/about" },
     {
-      name: t("nav_services", "Services"),
+      name: t("nav_services"),
       href: "/services",
       hasDropdown: true,
     },
-    { name: t("nav_projects", "Projects"), href: "/projects" },
-    { name: t("nav_gallery", "Events & Gallery"), href: "/gallery" },
-    { name: t("nav_activities", "Activities"), href: "/news" },
-    { name: t("nav_booking", "Social Enterprise"), href: "/booking" },
-    { name: t("nav_contact", "Contact Us"), href: "/contact" },
+    { name: t("nav_projects"), href: "/projects" },
+    { name: t("nav_gallery"), href: "/gallery" },
+    { name: t("nav_activities"), href: "/news" },
+    { name: t("nav_booking"), href: "/booking" },
+    { name: t("nav_contact"), href: "/contact" },
   ];
 
   const customLogo = data?.["site_logo"];
@@ -47,7 +47,7 @@ export default function Navbar() {
                 <Image
                   src={getAssetUrl(customLogo)}
                   fill
-                  alt="Trans Equality Trust Logo"
+                  alt={t("ui_nav_trans_equality_trust_logo")}
                   className="object-contain object-left"
                   priority
                   unoptimized={isPreview}
@@ -102,13 +102,13 @@ export default function Navbar() {
                             href="/services"
                             className="block px-4 py-2 hover:bg-pink-50 text-slate-700 hover:text-[#2A8ACD] transition-colors text-[10px]"
                           >
-                            {t("nav_drop_services", "Advocacy Services")}
+                            {t("nav_drop_services")}
                           </Link>
                           <Link
                             href="/volunteer"
                             className="block px-4 py-2 hover:bg-pink-50 text-slate-700 hover:text-[#2A8ACD] transition-colors text-[10px]"
                           >
-                            {t("nav_drop_volunteer", "Volunteer")}
+                            {t("nav_drop_volunteer")}
                           </Link>
                         </div>
                       </motion.div>
@@ -149,10 +149,10 @@ export default function Navbar() {
 
             {/* Donate Button */}
             <Link
-              href="/donate"
+              href={t("nav_donate_url")}
               className="bg-[#2A8ACD] hover:bg-[#2374b0] text-white text-[10px] font-black uppercase tracking-widest px-5 py-2.5 rounded-full shadow-md shadow-sky-100 transition-all hover:scale-105 active:scale-95"
             >
-              {t("btn_donate", "Donate")}
+              {t("btn_donate")}
             </Link>
           </div>
 
@@ -160,7 +160,7 @@ export default function Navbar() {
           <button
             className="lg:hidden p-2 text-[#2A8ACD] hover:opacity-80 transition-colors"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            aria-label="Toggle Menu"
+            aria-label={t("ui_nav_toggle_menu")}
           >
             <svg
               className="w-6 h-6"
@@ -195,7 +195,8 @@ export default function Navbar() {
             <div className="flex flex-col p-6 space-y-4 text-[12px] font-bold uppercase tracking-widest text-slate-700">
               <div className="flex items-center justify-between pb-3 border-b border-pink-100">
                 <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">
-                  Language:
+                  
+                  {t("ui_nav_language")}
                 </span>
                 <div className="flex gap-1.5 bg-slate-50 p-1 rounded-full border border-[#EFB9C5]/40">
                   {languages.map((lang) => (
@@ -230,7 +231,7 @@ export default function Navbar() {
                         className="block hover:text-[#2A8ACD]"
                         onClick={() => setIsMobileMenuOpen(false)}
                       >
-                        {t("nav_drop_volunteer", "Volunteer")}
+                        {t("nav_drop_volunteer")}
                       </Link>
                     </div>
                   )}
@@ -239,11 +240,11 @@ export default function Navbar() {
 
               <div className="pt-2">
                 <Link
-                  href="/donate"
+                  href={t("nav_donate_url")}
                   onClick={() => setIsMobileMenuOpen(false)}
                   className="block text-center bg-[#2A8ACD] text-white py-3 rounded-full text-[10px] font-black uppercase tracking-widest shadow-md"
                 >
-                  {t("btn_donate", "Donate")}
+                  {t("btn_donate")}
                 </Link>
               </div>
             </div>

@@ -1,9 +1,10 @@
 import { MetadataRoute } from 'next';
+import { getSettings, siteUrl } from './lib/cms';
 
 const API_BASE = (process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000").replace(/\/+$/, "");
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = 'https://transequalitytrust.lk'; 
+  const baseUrl = siteUrl(await getSettings());
 
   const staticPages = [
     '',

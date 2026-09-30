@@ -28,17 +28,6 @@ const fadeInUp: Variants = {
   },
 };
 
-const defaultImpactCards: ImpactCardItem[] = [
-  { cat: "Legal", title: "Human Rights Appeal", img: "https://images.unsplash.com/photo-1589829545856-d10d557cf95f" },
-  { cat: "Policy", title: "Consortium Meeting", img: "https://images.unsplash.com/photo-1517048676732-d65bc937f952" },
-  { cat: "Community", title: "Safe-Space Unity", img: "https://images.unsplash.com/photo-1523240795612-9a054b0db644" },
-  { cat: "Health", title: "Recovery Pathways", img: "https://images.unsplash.com/photo-1531206715517-5c0ba140b2b8" },
-  { cat: "Education", title: "Vocational Skills", img: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f" },
-  { cat: "Inclusion", title: "Workplace Training", img: "https://images.unsplash.com/photo-1521737604893-d14cc237f11d" },
-  { cat: "Advocacy", title: "Global Representation", img: "https://images.unsplash.com/photo-1450101499163-c8848c66ca85" },
-  { cat: "Unity", title: "Community Support", img: "https://images.unsplash.com/photo-1531206715517-5c0ba140b2b8" },
-];
-
 export default function HomeContent({ customTitle }: HomeContentProps) {
   const { t, getAsset, isPreview, data, locale } = useLanguage();
 
@@ -47,20 +36,18 @@ export default function HomeContent({ customTitle }: HomeContentProps) {
     [Autoplay({ delay: 3500 })]
   );
 
-  // Dynamic 8 cards loaded from backend/preview or default fallback
+  // Impact cards come from the "impact_cards" setting (managed in Admin → Home Page)
   const rawCards = data["impact_cards"];
-  let impactCards: ImpactCardItem[] = defaultImpactCards;
+  let impactCards: ImpactCardItem[] = [];
 
-  if (Array.isArray(rawCards) && rawCards.length > 0) {
+  if (Array.isArray(rawCards)) {
     impactCards = rawCards as ImpactCardItem[];
   } else if (typeof rawCards === "string") {
     try {
       const parsed = JSON.parse(rawCards);
-      if (Array.isArray(parsed) && parsed.length > 0) {
-        impactCards = parsed;
-      }
+      if (Array.isArray(parsed)) impactCards = parsed;
     } catch {
-      // fallback to default
+      // invalid JSON: show no cards
     }
   }
 
@@ -100,10 +87,10 @@ export default function HomeContent({ customTitle }: HomeContentProps) {
     return () => window.removeEventListener("message", handleScrollMessage);
   }, [emblaApi]);
 
-  const getCardText = (value: Record<string, string> | string | undefined, fallback: string) => {
-    if (!value) return fallback;
+  const getCardText = (value: Record<string, string> | string | undefined) => {
+    if (!value) return "";
     if (typeof value === "object") {
-      return value[locale] || value["en"] || fallback;
+      return value[locale] || value["en"] || "";
     }
     return String(value);
   };
@@ -121,36 +108,35 @@ export default function HomeContent({ customTitle }: HomeContentProps) {
           className="w-full lg:w-1/2"
         >
           <span className="text-[#8e7f71] font-bold tracking-[0.4em] text-[10px] uppercase mb-6 block border-l-2 border-[#2A8ACD] pl-4">
-            {t("hero_top_label", "TRANS EQUALITY TRUST • SRI LANKA")}
+            {t("hero_top_label")}
           </span>
 
           <h1 className="font-serif text-5xl md:text-7xl font-bold text-[#2374b0] mb-6 leading-[1.1] tracking-tighter">
-            {customTitle || t("hero_title_1", "Protecting")} <br />
+            {customTitle || t("hero_title_1")} <br />
             <span className="italic font-normal text-pride-gradient">
-              {t("hero_title_2", "Rights & Hope.")}
+              {t("hero_title_2")}
             </span>
           </h1>
 
           <p className="max-w-md text-gray-500 leading-relaxed text-sm md:text-base mb-10 italic">
             {t(
-              "hero_description",
-              "Dedicated to protecting the safety and well-being of over 5,000 transgender individuals through systemic advocacy."
+              "hero_description"
             )}
           </p>
 
           <div className="flex flex-wrap gap-4">
             {/* 👇 Applied #2A8ACD (tet-blue) */}
             <Link
-              href={t("btn_support_url", "/donate")}
+              href={t("btn_support_url")}
               className="bg-[#2A8ACD] hover:bg-[#2374b0] text-white px-8 py-3 rounded-full text-[10px] font-bold tracking-widest hover:shadow-xl transition-all uppercase"
             >
-              {t("btn_support", "Support Us")}
+              {t("btn_support")}
             </Link>
             <Link
-              href={t("btn_mission_url", "/about")}
+              href={t("btn_mission_url")}
               className="border border-[#2A8ACD] text-[#2A8ACD] px-8 py-3 rounded-full text-[10px] font-bold tracking-widest hover:bg-sky-50 transition-all uppercase"
             >
-              {t("btn_mission", "Our Mission")}
+              {t("btn_mission")}
             </Link>
           </div>
         </motion.div>
@@ -166,11 +152,10 @@ export default function HomeContent({ customTitle }: HomeContentProps) {
           >
             <Image
               src={getAsset(
-                "hero_image_main",
-                "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80"
+                "hero_image_main"
               )}
               fill
-              alt="Advocacy Header"
+              alt={t("ui_home_advocacy_header")}
               className="object-cover"
               priority
               sizes="(max-width: 768px) 100vw, 50vw"
@@ -186,11 +171,10 @@ export default function HomeContent({ customTitle }: HomeContentProps) {
           >
             <Image
               src={getAsset(
-                "hero_image_sub",
-                "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&q=80"
+                "hero_image_sub"
               )}
               fill
-              alt="Community Support"
+              alt={t("ui_home_community_support")}
               className="object-cover"
               sizes="(max-width: 768px) 50vw, 25vw"
               unoptimized={isPreview}
@@ -211,10 +195,10 @@ export default function HomeContent({ customTitle }: HomeContentProps) {
                 viewport={{ once: true }}
                 className="font-serif text-4xl md:text-5xl text-[#1a365d] font-bold italic tracking-tight"
               >
-                {t("impact_title", "Real-World Impact")}
+                {t("impact_title")}
               </motion.h2>
               <p className="text-blue-400 mt-4 text-[9px] font-bold uppercase tracking-[0.4em]">
-                {t("impact_label", "Documenting Change • 08 Core Pillars")}
+                {t("impact_label")}
               </p>
             </div>
           </div>
@@ -223,9 +207,9 @@ export default function HomeContent({ customTitle }: HomeContentProps) {
             <div className="overflow-hidden" ref={emblaRef}>
               <div className="flex gap-6">
                 {impactCards.map((item, i) => {
-                  const imagePath = item.image || item.img || defaultImpactCards[i % defaultImpactCards.length].img;
-                  const categoryText = getCardText(item.cat, "Advocacy");
-                  const titleText = getCardText(item.title, "Impact Initiative");
+                  const imagePath = item.image || item.img || "";
+                  const categoryText = getCardText(item.cat);
+                  const titleText = getCardText(item.title);
 
                   return (
                     <div
@@ -236,14 +220,14 @@ export default function HomeContent({ customTitle }: HomeContentProps) {
                         whileHover={{ y: -10 }}
                         className="relative aspect-[4/5] rounded-[2.5rem] overflow-hidden border-[8px] border-white shadow-xl bg-white transition-all"
                       >
-                        <Image
-                          src={getAsset(imagePath, defaultImpactCards[i % defaultImpactCards.length].img!)}
+                        {imagePath && <Image
+                          src={getAsset(imagePath)}
                           alt={titleText}
                           fill
                           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
                           className="object-cover"
                           unoptimized={isPreview}
-                        />
+                        />}
                         <div className="absolute inset-0 bg-gradient-to-t from-[#2A8ACD]/90 via-transparent flex flex-col justify-end p-8">
                           <span className="text-[#EFB9C5] text-[8px] font-bold uppercase tracking-[0.25em] mb-1">
                             {categoryText}
@@ -275,22 +259,13 @@ export default function HomeContent({ customTitle }: HomeContentProps) {
               className="text-center group p-10 rounded-[3rem] bg-[#FFF1F5] border border-pink-50 transition-colors"
             >
               <h3 className="font-serif text-5xl text-[#d88998] mb-2">
-                {t(
-                  `stat_${i}_val`,
-                  i === 1 ? "5,000+" : i === 2 ? "30%" : "Policy"
-                )}
+                {t(`stat_${i}_val`)}
               </h3>
               <p className="font-bold text-[#d88998] text-[9px] tracking-[0.3em] uppercase mb-4">
-                {t(
-                  `stat_${i}_label`,
-                  i === 1 ? "Community Scope" : i === 2 ? "Recovery Aid" : "Advocacy"
-                )}
+                {t(`stat_${i}_label`)}
               </p>
               <p className="text-gray-400 text-sm leading-relaxed italic">
-                {t(
-                  `stat_${i}_desc`,
-                  "Institutional support provided across the Sri Lankan trans community."
-                )}
+                {t(`stat_${i}_desc`)}
               </p>
             </motion.div>
           ))}
@@ -305,17 +280,16 @@ export default function HomeContent({ customTitle }: HomeContentProps) {
             <div className="relative h-full w-full rounded-[3rem] overflow-hidden shadow-2xl">
               <Image
                 src={getAsset(
-                  "story_image",
-                  "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&q=80"
+                  "story_image"
                 )}
                 fill
-                alt="Breaking Systemic Barriers"
+                alt={t("ui_home_breaking_systemic_barriers")}
                 className="object-cover opacity-90"
                 sizes="(max-width: 768px) 100vw, 50vw"
                 unoptimized={isPreview}
               />
               <a
-                href={t("story_video_url", "https://youtube.com")}
+                href={t("story_video_url")}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="absolute inset-0 flex items-center justify-center"
@@ -335,32 +309,31 @@ export default function HomeContent({ customTitle }: HomeContentProps) {
             className="w-full md:w-1/2"
           >
             <span className="text-pink-500 font-bold tracking-[0.3em] text-[10px] uppercase mb-4 block">
-              {t("story_label", "Our Advocacy")}
+              {t("story_label")}
             </span>
             <h2 className="font-serif text-5xl md:text-6xl text-[#1a365d] font-bold leading-tight italic mb-8">
-              {t("story_title", "Breaking Systemic Barriers.")}
+              {t("story_title")}
             </h2>
             <p className="text-gray-500 text-lg leading-relaxed mb-10 italic">
               {t(
-                "story_description",
-                "Isolation traps many in addiction. TET acts as the family support system these individuals lack—stopping illegal detentions and providing safe recovery paths."
+                "story_description"
               )}
             </p>
             <div className="flex gap-10 items-center">
               <div className="flex flex-col">
                 <span className="text-3xl font-serif text-[#1a365d]">
-                  {t("story_stat_val", "25-30%")}
+                  {t("story_stat_val")}
                 </span>
                 <span className="text-[9px] font-bold uppercase tracking-widest text-gray-400">
-                  {t("story_stat_label", "Addiction Rate")}
+                  {t("story_stat_label")}
                 </span>
               </div>
               {/* 👇 Applied #2A8ACD (tet-blue) */}
               <Link
-                href={t("explore_services_url", "/services")}
+                href={t("explore_services_url")}
                 className="bg-[#2A8ACD] hover:bg-[#2374b0] text-white px-8 py-3 rounded-full text-[10px] font-bold tracking-widest uppercase shadow-md transition-all"
               >
-                {t("explore_services", "Explore Services")}
+                {t("explore_services")}
               </Link>
             </div>
           </motion.div>

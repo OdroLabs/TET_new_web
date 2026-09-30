@@ -14,12 +14,8 @@ const fadeInUp: Variants = {
   },
 };
 
-const defaultCoreValues = [
-  { id: 1, title: "Inclusion", desc: "Ensuring that every individual, regardless of their background, has a seat at the table." },
-  { id: 2, title: "Integrity", desc: "Operating with transparency and honesty in all our advocacy and business efforts." },
-  { id: 3, title: "Resilience", desc: "Standing firm in the face of systemic challenges to secure a better tomorrow." },
-  { id: 4, title: "Empowerment", desc: "Providing the tools and resources necessary for our community to lead independent lives." },
-];
+// Four core value slots; text comes from about_value_{n}_title / _text settings
+const coreValueSlots = [1, 2, 3, 4];
 
 export default function AboutPage() {
   const { t, getAssetUrl, isPreview } = useLanguage();
@@ -66,25 +62,24 @@ export default function AboutPage() {
         <motion.div initial="initial" whileInView="whileInView" variants={fadeInUp} viewport={{ once: true }}>
           <span className="text-[#2A8ACD] font-bold tracking-[0.3em] text-[11px] uppercase mb-6 px-4 py-1.5 bg-sky-100/80 rounded-full border border-sky-200 inline-flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-pink-500 animate-pulse"></span>
-            {t("about_hero_label", "OUR HISTORY • OUR MISSION")}
+            {t("about_hero_label")}
           </span>
             
           <h1 className="font-serif text-5xl md:text-7xl font-bold text-[#2A8ACD] mb-6 tracking-tight">
-            {t("about_hero_title", "Advocating for Dignity.")}
+            {t("about_hero_title")}
           </h1>
           <p className="max-w-2xl mx-auto text-slate-600 leading-relaxed text-sm md:text-base">
             {t(
-              "about_hero_description",
-              "TET is a pioneering social enterprise and advocacy organization in Sri Lanka dedicated to the empowerment of the transgender community. We work towards a society where every person can live with dignity, safety, equality, and freedom."
+              "about_hero_description"
             )}
           </p>
         </motion.div>
 
         <div className="relative w-full max-w-4xl h-[320px] md:h-[520px] mt-16 rounded-t-[3rem] md:rounded-t-full overflow-hidden shadow-2xl border-4 border-white border-b-8 border-b-[#2A8ACD]">
           <Image
-            src={getAssetUrl("about_hero_image", "https://images.unsplash.com/photo-1573164713988-8665fc963095")}
+            src={getAssetUrl("about_hero_image")}
             fill
-            alt="Advocacy Header"
+            alt={t("ui_about_advocacy_header")}
             className="object-cover"
             priority
             unoptimized={isPreview}
@@ -111,12 +106,11 @@ export default function AboutPage() {
           </div>
             
           <h2 className="font-serif text-3xl font-bold text-[#2A8ACD] mb-4">
-            {t("about_vision_title", "Our Vision")}
+            {t("about_vision_title")}
           </h2>
           <p className="text-slate-600 text-sm leading-relaxed">
             {t(
-              "about_vision_text",
-              "We envision a future where gender identity is no longer a barrier to human rights, healthcare, or employment. Our goal is to foster a Sri Lankan society that celebrates diversity and ensures total legal and social inclusion for all."
+              "about_vision_text"
             )}
           </p>
         </motion.div>
@@ -133,12 +127,11 @@ export default function AboutPage() {
           </div>
         
           <h2 className="font-serif text-3xl font-bold text-[#2A8ACD] mb-4">
-            {t("about_mission_title", "Our Mission")}
+            {t("about_mission_title")}
           </h2>
           <p className="text-slate-600 text-sm leading-relaxed">
             {t(
-              "about_mission_text",
-              "To empower the transgender community through economic opportunities, legislative advocacy, and social support. We provide a platform for voices that have been silenced, creating sustainable change through education and social enterprise."
+              "about_mission_text"
             )}
           </p>
         </motion.div>
@@ -151,17 +144,18 @@ export default function AboutPage() {
       >
         <div className="max-w-7xl mx-auto text-center">
           <span className="text-pink-600 font-bold uppercase text-[10px] tracking-[0.25em] block mb-2">
-            Guiding Principles
+            
+            {t("ui_about_guiding_principles")}
           </span>
         
           <h2 className="font-serif text-4xl md:text-5xl font-bold text-[#2A8ACD] mb-16 italic">
-            {t("about_values_main_title", "Our Core Values")}
+            {t("about_values_main_title")}
           </h2>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            {defaultCoreValues.map((val) => (
+            {coreValueSlots.map((id) => (
               <motion.div
-                key={val.id}
+                key={id}
                 initial="initial"
                 whileInView="whileInView"
                 variants={fadeInUp}
@@ -171,10 +165,10 @@ export default function AboutPage() {
                 <div className="w-2 h-10 bg-gradient-to-b from-[#2A8ACD] to-pink-400 rounded-full mb-6"></div>
                 
                 <h3 className="font-serif text-xl font-bold text-[#2A8ACD] mb-3">
-                  {t(`about_value_${val.id}_title`, val.title)}
+                  {t(`about_value_${id}_title`)}
                 </h3>
                 <p className="text-slate-600 text-xs leading-relaxed max-w-[220px]">
-                  {t(`about_value_${val.id}_text`, val.desc)}
+                  {t(`about_value_${id}_text`)}
                 </p>
               </motion.div>
             ))}
@@ -190,9 +184,9 @@ export default function AboutPage() {
         <div className="bg-white rounded-3xl md:rounded-[3.5rem] overflow-hidden shadow-xl border border-sky-200/80 flex flex-col lg:flex-row items-center">
           <div className="w-full lg:w-2/5 h-[400px] lg:h-[580px] relative">
             <Image
-              src={getAssetUrl("about_leader_image", "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2")}
+              src={getAssetUrl("about_leader_image")}
               fill
-              alt="Leader"
+              alt={t("ui_about_leader")}
               className="object-cover"
               unoptimized={isPreview}
               sizes="(max-width: 768px) 100vw, 50vw"
@@ -202,19 +196,18 @@ export default function AboutPage() {
 
           <div className="w-full lg:w-3/5 p-10 md:p-16">
             <span className="text-[#2A8ACD] font-bold tracking-[0.25em] text-[10px] uppercase mb-3 block">
-              {t("about_leader_label", "Leadership Spotlight")}
+              {t("about_leader_label")}
             </span>
             
             <h2 className="font-serif text-4xl md:text-5xl font-bold text-[#2A8ACD] mb-2">
-              {t("about_leader_name", "Kasuni Mayadunna")}
+              {t("about_leader_name")}
             </h2>
             <p className="text-pink-600 font-serif italic mb-6 font-semibold">
-              {t("about_leader_role", "Executive Director")}
+              {t("about_leader_role")}
             </p>
             <p className="text-slate-600 text-sm leading-relaxed mb-8">
               {t(
-                "about_leader_bio",
-                "Kasuni Mayadunna is a visionary advocate for transgender rights in Sri Lanka. Under her leadership, TET has evolved from a small collective into a robust social enterprise. She is dedicated to creating institutional change that addresses the economic disparities and social stigma faced by the trans community."
+                "about_leader_bio"
               )}
             </p>
 
@@ -222,18 +215,18 @@ export default function AboutPage() {
               <div>
             
                 <p className="text-3xl font-serif font-bold text-[#2A8ACD]">
-                  {t("about_leader_stat1_val", "5,000+")}
+                  {t("about_leader_stat1_val")}
                 </p>
                 <p className="text-[10px] font-bold text-[#2A8ACD] uppercase tracking-widest mt-1">
-                  {t("about_leader_stat1_label", "Lives Impacted")}
+                  {t("about_leader_stat1_label")}
                 </p>
               </div>
               <div>
                 <p className="text-3xl font-serif font-bold text-pink-600">
-                  {t("about_leader_stat2_val", "24/7")}
+                  {t("about_leader_stat2_val")}
                 </p>
                 <p className="text-[10px] font-bold text-[#2A8ACD] uppercase tracking-widest mt-1">
-                  {t("about_leader_stat2_label", "Crisis Support")}
+                  {t("about_leader_stat2_label")}
                 </p>
               </div>
             </div>
@@ -255,16 +248,15 @@ export default function AboutPage() {
             className="mb-12 max-w-2xl mx-auto"
           >
             <span className="text-pink-600 font-bold uppercase text-[10px] tracking-[0.25em] block mb-2">
-              {t("about_team_label", "COMMUNITY LEADERSHIP • OUR ADVOCATES")}
+              {t("about_team_label")}
             </span>
             
             <h2 className="font-serif text-4xl md:text-5xl font-bold text-[#2A8ACD] mb-4">
-              {t("about_team_title", "Our Team Members")}
+              {t("about_team_title")}
             </h2>
             <p className="text-slate-600 text-sm md:text-base leading-relaxed">
               {t(
-                "about_team_desc",
-                "A dedicated collective of advocates, case workers, and community leaders working together to ensure safe and stigma-free spaces for transgender individuals across Sri Lanka."
+                "about_team_desc"
               )}
             </p>
           </motion.div>
@@ -280,9 +272,9 @@ export default function AboutPage() {
 
             <div className="relative w-full h-[350px] sm:h-[450px] md:h-[560px] rounded-3xl md:rounded-[3rem] overflow-hidden shadow-2xl border-4 border-white">
               <Image
-                src={getAssetUrl("about_team_group_image", "https://images.unsplash.com/photo-1522071820081-009f0129c71c")}
+                src={getAssetUrl("about_team_group_image")}
                 fill
-                alt="Our Team Members"
+                alt={t("ui_about_our_team_members")}
                 className="object-cover"
                 unoptimized={isPreview}
                 sizes="(max-width: 1024px) 100vw, 80vw"
@@ -291,11 +283,13 @@ export default function AboutPage() {
 
               <div className="absolute bottom-6 left-6 right-6 md:bottom-10 md:left-10 md:right-auto bg-white/90 backdrop-blur-md px-6 py-3.5 rounded-2xl border border-sky-200 shadow-md text-left">
                 <span className="text-[10px] font-bold text-pink-600 uppercase tracking-widest block">
-                  Trans Equality Trust
+                  
+                  {t("ui_about_trans_equality_trust")}
                 </span>
                     
                 <span className="text-xs md:text-sm font-bold text-[#2A8ACD]">
-                  Team &amp; Grassroots Community Organizers
+                  
+                  {t("ui_about_team_and_grassroots_community_organizers")}
                 </span>
               </div>
             </div>

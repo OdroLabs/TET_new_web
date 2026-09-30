@@ -23,16 +23,28 @@ interface LanguageContextType {
   setLocale: (lang: string) => void;
   data: SettingsMap;
   isPreview: boolean;
-  t: (key: string, fallback?: string) => string;
-  getAsset: (keyOrPath: SettingValue | null | undefined, fallback?: string) => string;
-  getAssetUrl: (keyOrPath: SettingValue | null | undefined, fallback?: string) => string; 
+  /** Text for a settings key in the current language (falls back to English, then ""). */
+  t: (key: string) => string;
+  /** Image URL for a settings key or stored path; a transparent pixel when nothing is set. */
+  getAsset: (keyOrPath: SettingValue | null | undefined) => string;
+  getAssetUrl: (keyOrPath: SettingValue | null | undefined) => string;
 }
+
+// Rendered when an image setting is empty, so next/image never receives an empty src
+const EMPTY_IMAGE = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
-export const LanguageProvider = ({ children }: { children: React.ReactNode }) => {
+export const LanguageProvider = ({
+  children,
+  initialSettings = {},
+}: {
+  children: React.ReactNode;
+  /** Settings loaded on the server (layout.tsx) so pages render with real content on first paint */
+  initialSettings?: SettingsMap;
+}) => {
   const [locale, setLocale] = useState<string>("en");
-  const [initialData, setInitialData] = useState<SettingsMap>({});
+  const [initialData, setInitialData] = useState<SettingsMap>(initialSettings);
   const [previewData, setPreviewData] = useState<SettingsMap | null>(null);
 
   useEffect(() => {
@@ -89,12 +101,12 @@ export const LanguageProvider = ({ children }: { children: React.ReactNode }) =>
   }, [initialData, previewData]);
 
   const t = useCallback(
-    (key: string, fallback: string = ""): string => {
+    (key: string): string => {
       const val = mergedData[key];
-      if (val === undefined || val === null || val === "") return fallback;
+      if (val === undefined || val === null || val === "") return "";
 
       if (typeof val === "object") {
-        return val[locale] || val["en"] || fallback;
+        return val[locale] || val["en"] || "";
       }
 
       return String(val);
@@ -103,7 +115,8 @@ export const LanguageProvider = ({ children }: { children: React.ReactNode }) =>
   );
 
   const getAsset = useCallback(
-    (keyOrPath: SettingValue | null | undefined, fallback: string = ""): string => {
+    (keyOrPath: SettingValue | null | undefined): string => {
+      const fallback = EMPTY_IMAGE;
       if (!keyOrPath) return fallback;
 
       let target: SettingValue | undefined = keyOrPath;

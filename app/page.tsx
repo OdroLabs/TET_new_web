@@ -1,68 +1,32 @@
 import type { Metadata } from "next";
 import HomeContent from "./HomeContent";
+import { getSettings, pageMetadata, text, siteUrl } from "./lib/cms";
 
-export const metadata: Metadata = {
-  title: "Trans Equality Trust (TET) | Protecting Transgender Rights in Sri Lanka",
-  description: "Dedicated to protecting the safety, legal rights, and well-being of over 5,000 transgender individuals in Sri Lanka through systemic advocacy, crisis aid, and social enterprise.",
-  keywords: [
-    "Transgender rights Sri Lanka",
-    "Trans Equality Trust",
-    "TET Sri Lanka",
-    "LGBTQ+ support Colombo",
-    "Legal aid for trans community",
-  ],
-  openGraph: {
-    title: "Trans Equality Trust (TET) | Sri Lanka",
-    description: "Protecting the rights, safety, and well-being of the transgender community through advocacy and support.",
-    url: "https://transequalitytrust.lk",
-    siteName: "Trans Equality Trust",
-    images: [
-      {
-        url: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80",
-        width: 1200,
-        height: 630,
-        alt: "Trans Equality Trust Advocacy",
-      },
-    ],
-    locale: "en_LK",
-    type: "website",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Trans Equality Trust (TET) | Sri Lanka",
-    description: "Protecting the rights, safety, and well-being of the transgender community.",
-    images: ["https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80"],
-  },
-  alternates: {
-    canonical: "https://transequalitytrust.lk",
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  return pageMetadata("home", "");
+}
 
-export default function Page() {
+export default async function Page() {
+  const s = await getSettings();
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "NGO",
-    "name": "Trans Equality Trust",
-    "alternateName": "TET Sri Lanka",
-    "url": "https://transequalitytrust.lk",
-    "logo": "https://transequalitytrust.lk/logo.png",
-    "description": "Protecting the rights, safety, and well-being of the transgender community in Sri Lanka.",
+    "name": text(s, "seo_site_name"),
+    "alternateName": text(s, "seo_org_alt_name"),
+    "url": siteUrl(s),
+    "logo": text(s, "seo_org_logo_url"),
+    "description": text(s, "seo_org_description"),
     "address": {
       "@type": "PostalAddress",
-      "addressLocality": "Colombo 05",
-      "addressCountry": "LK"
+      "addressLocality": text(s, "seo_org_locality"),
+      "addressCountry": text(s, "seo_org_country"),
     },
-    "sameAs": [
-      "https://www.facebook.com/share/12G6Xq5jZ15/"
-    ]
+    "sameAs": [text(s, "footer_fb_url")].filter(Boolean),
   };
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <HomeContent />
     </>
   );
