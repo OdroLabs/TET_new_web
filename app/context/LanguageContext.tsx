@@ -11,7 +11,7 @@ import React, {
 
 const RAW_API_BASE =
   process.env.NEXT_PUBLIC_BACKEND_URL ||
-  "http://localhost:8000"; 
+  "https://qtxzpyl7n4pxoe9ku8fr280l.51.79.156.158.sslip.io"; 
 const API_BASE = RAW_API_BASE.replace(/\/+$/, "");
 
 export type TrilingualTranslations = Record<string, string>;
@@ -23,14 +23,11 @@ interface LanguageContextType {
   setLocale: (lang: string) => void;
   data: SettingsMap;
   isPreview: boolean;
-  /** Text for a settings key in the current language (falls back to English, then ""). */
   t: (key: string) => string;
-  /** Image URL for a settings key or stored path; a transparent pixel when nothing is set. */
   getAsset: (keyOrPath: SettingValue | null | undefined) => string;
   getAssetUrl: (keyOrPath: SettingValue | null | undefined) => string;
 }
 
-// Rendered when an image setting is empty, so next/image never receives an empty src
 const EMPTY_IMAGE = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
@@ -40,7 +37,6 @@ export const LanguageProvider = ({
   initialSettings = {},
 }: {
   children: React.ReactNode;
-  /** Settings loaded on the server (layout.tsx) so pages render with real content on first paint */
   initialSettings?: SettingsMap;
 }) => {
   const [locale, setLocale] = useState<string>("en");
@@ -48,9 +44,14 @@ export const LanguageProvider = ({
   const [previewData, setPreviewData] = useState<SettingsMap | null>(null);
 
   useEffect(() => {
+    if (typeof document !== "undefined" && locale) {
+      document.documentElement.lang = locale;
+    }
+  }, [locale]);
+
+  useEffect(() => {
     let isMounted = true;
 
-    // Helper to fetch settings asynchronously without triggering synchronous setState linter warnings
     const loadSettings = () => {
       fetch(`${API_BASE}/api/settings?t=${Date.now()}`, {
         cache: "no-store",
@@ -72,10 +73,8 @@ export const LanguageProvider = ({
         });
     };
 
-    // 1. Initial settings fetch
     loadSettings();
 
-    // 2. Listen for Livewire postMessage events (preview & publish reload)
     const handleMessage = (event: MessageEvent) => {
       if (event.data?.type === "TET_LIVE_PREVIEW") {
         setPreviewData((prev) => ({
