@@ -19,7 +19,6 @@ export default function Navbar() {
   ];
 
   const navLinks = [
-    // { name: t("nav_home", "Home"), href: "/" },
     { name: t("nav_about"), href: "/about" },
     {
       name: t("nav_services"),
@@ -31,16 +30,14 @@ export default function Navbar() {
     { name: t("nav_activities"), href: "/news" },
     { name: t("nav_booking"), href: "/booking" },
     { name: t("nav_contact"), href: "/contact" },
-  ];
+  ].filter((link) => Boolean(link.name && link.name.trim()));
 
   const customLogo = data?.["site_logo"];
 
   return (
-    // 👇 Solid clean light pink background with no gray/silver gradients
-    <nav className="bg-[#fbf4f6] backdrop-blur-md sticky top-0 z-50 border-b border-[#EFB9C5]/60 shadow-sm">
-      <div className="px-4 md:px-8 w-full">
-        <div className="flex justify-between h-20 items-center">
-          {/* LOGO */}
+    <nav className="bg-[#fbf4f6] backdrop-blur-md sticky top-0 z-50 border-b border-[#EFB9C5]/60 shadow-sm w-full">
+      <div className="w-full max-w-6xl xl:max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
+        <div className="flex justify-between h-20 items-center gap-6">
           <Link href="/" className="flex-shrink-0 flex items-center">
             {customLogo ? (
               <div className="relative h-9 md:h-12 w-36 md:w-48">
@@ -58,8 +55,7 @@ export default function Navbar() {
             )}
           </Link>
 
-          {/* DESKTOP LINKS */}
-          <div className="hidden lg:flex items-center flex-grow justify-center space-x-5 xl:space-x-7 text-[11px] font-bold uppercase tracking-[0.2em] text-slate-700">
+          <div className="hidden xl:flex items-center justify-center gap-4 2xl:gap-7 text-[11px] font-bold uppercase tracking-[0.15em] text-slate-700">
             {navLinks.map((link) =>
               link.hasDropdown ? (
                 <div
@@ -70,7 +66,7 @@ export default function Navbar() {
                 >
                   <Link
                     href={link.href}
-                    className="hover:text-[#2A8ACD] transition-colors flex items-center gap-1 py-2"
+                    className="hover:text-[#2A8ACD] transition-colors flex items-center gap-1.5 py-2"
                   >
                     {link.name}
                     <svg
@@ -88,7 +84,6 @@ export default function Navbar() {
                     </svg>
                   </Link>
 
-                  {/* Dropdown */}
                   <AnimatePresence>
                     {isServicesOpen && (
                       <motion.div
@@ -123,12 +118,11 @@ export default function Navbar() {
                 >
                   {link.name}
                 </Link>
-              ),
+              )
             )}
           </div>
 
-          {/* RIGHT ACTIONS: DONATE + TRILINGUAL SWITCHER */}
-          <div className="hidden lg:flex items-center gap-3 flex-shrink-0">
+          <div className="hidden xl:flex items-center gap-3 flex-shrink-0">
             <div className="flex items-center bg-white border border-[#EFB9C5]/60 rounded-full p-1 shadow-sm">
               {languages.map((lang) => (
                 <button
@@ -147,18 +141,16 @@ export default function Navbar() {
               ))}
             </div>
 
-            {/* Donate Button */}
             <Link
               href={t("nav_donate_url")}
-              className="bg-[#2A8ACD] hover:bg-[#2374b0] text-white text-[10px] font-black uppercase tracking-widest px-5 py-2.5 rounded-full shadow-md shadow-sky-100 transition-all hover:scale-105 active:scale-95"
+              className="bg-[#2A8ACD] hover:bg-[#2374b0] text-white text-[10px] font-black uppercase tracking-widest px-5 py-2.5 rounded-full shadow-md shadow-sky-100 transition-all hover:scale-105 active:scale-95 whitespace-nowrap"
             >
               {t("btn_donate")}
             </Link>
           </div>
 
-          {/* MOBILE MENU TOGGLE */}
           <button
-            className="lg:hidden p-2 text-[#2A8ACD] hover:opacity-80 transition-colors"
+            className="xl:hidden p-2 text-[#2A8ACD] hover:opacity-80 transition-colors"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             aria-label={t("ui_nav_toggle_menu")}
           >
@@ -183,19 +175,17 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* MOBILE DRAWER */}
       <AnimatePresence>
         {isMobileMenuOpen && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="lg:hidden bg-white border-b border-[#EFB9C5]/40 overflow-hidden shadow-md"
+            className="xl:hidden bg-white border-b border-[#EFB9C5]/40 overflow-hidden shadow-md"
           >
-            <div className="flex flex-col p-6 space-y-4 text-[12px] font-bold uppercase tracking-widest text-slate-700">
+            <div className="w-full max-w-6xl xl:max-w-7xl mx-auto px-6 sm:px-8 py-6 space-y-4 text-[12px] font-bold uppercase tracking-widest text-slate-700">
               <div className="flex items-center justify-between pb-3 border-b border-pink-100">
                 <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">
-                  
                   {t("ui_nav_language")}
                 </span>
                 <div className="flex gap-1.5 bg-slate-50 p-1 rounded-full border border-[#EFB9C5]/40">

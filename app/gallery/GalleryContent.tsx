@@ -2,19 +2,12 @@
 
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
-import { motion, AnimatePresence, Variants } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useLanguage } from "../context/LanguageContext";
 
-const API_BASE = (process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000").replace(/\/+$/, "");
+const API_BASE = (process.env.NEXT_PUBLIC_BACKEND_URL || "https://qtxzpyl7n4pxoe9ku8fr280l.51.79.156.158.sslip.io").replace(/\/+$/, "");
 
-const fadeInUp: Variants = {
-  initial: { opacity: 0, y: 20 },
-  whileInView: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] },
-  },
-};
+
 
 export interface EventItem {
   id: number;

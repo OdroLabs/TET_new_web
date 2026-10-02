@@ -5,7 +5,7 @@ import Image from "next/image";
 import { motion, AnimatePresence, Variants } from "framer-motion";
 import { useLanguage } from "../context/LanguageContext";
 
-const API_BASE = (process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000").replace(/\/+$/, "");
+const API_BASE = (process.env.NEXT_PUBLIC_BACKEND_URL || "https://qtxzpyl7n4pxoe9ku8fr280l.51.79.156.158.sslip.io").replace(/\/+$/, "");
 
 const fadeInUp: Variants = {
   initial: { opacity: 0, y: 20 },
